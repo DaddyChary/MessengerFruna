@@ -36,6 +36,10 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
+
+        backButton = findViewById(R.id.btnBack);
+        reloadButton = findViewById(R.id.btnReload);
+
         recyclerView = findViewById(R.id.recyclerViewUsers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -48,9 +52,8 @@ public class UserListActivity extends AppCompatActivity {
 
         loadUsers(); // Cargar todos los usuarios
 
-        backButton.setOnClickListener(view -> {
-            startActivity(new Intent(this, MenuActivity.class));
-            finish();
+        backButton.setOnClickListener(v -> {
+            finish(); // Cierra la actividad actual y regresa a la anterior
         });
 
         reloadButton.setOnClickListener(view -> {

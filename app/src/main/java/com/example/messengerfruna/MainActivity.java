@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,7 @@ import model.ChatMessage;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText messageInput;
-    private Button sendButton, buttonBack;
+    private Button sendButton;
     private DatabaseReference messagesRef;
     private List<ChatMessage> messageList;
     private MessageAdapter adapter;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewMessages);
         messageInput = findViewById(R.id.editTextMessage);
         sendButton = findViewById(R.id.buttonSend);
-        buttonBack = findViewById(R.id.buttonBack);
+        ImageButton buttonBack = findViewById(R.id.buttonBack);
         messagesRef = FirebaseDatabase.getInstance().getReference("messages");
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(this, messageList);
@@ -65,9 +66,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonBack.setOnClickListener(view -> {
-            startActivity(new Intent(this, UserListActivity.class));
-            finish();
+        buttonBack.setOnClickListener(v -> {
+            finish(); // Cierra la actividad actual y vuelve a la anterior
         });
 
         // Enviar mensaje

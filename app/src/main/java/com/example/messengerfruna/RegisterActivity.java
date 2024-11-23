@@ -25,13 +25,14 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        buttonBack = findViewById(R.id.buttonBack);
+
         email = findViewById(R.id.editTextEmail);
         password = findViewById(R.id.editTextPassword);
         registerButton = findViewById(R.id.buttonRegister);
         auth = FirebaseAuth.getInstance();
 
         buttonBack.setOnClickListener(view -> {
-            startActivity(new Intent(this, MenuActivity.class));
             finish();
         });
 

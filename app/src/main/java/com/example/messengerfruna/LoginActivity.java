@@ -20,13 +20,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        buttonBack = findViewById(R.id.buttonBack);
+
         email = findViewById(R.id.editTextEmail);
         password = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.buttonLogin);
         auth = FirebaseAuth.getInstance();
 
         buttonBack.setOnClickListener(view -> {
-            startActivity(new Intent(this, MenuActivity.class));
             finish();
         });
 
