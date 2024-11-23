@@ -1,7 +1,5 @@
 package com.example.messengerfruna;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,17 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.ChatMessage;
 import model.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
@@ -34,80 +31,92 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public UserAdapter(List<User> userList) {
         this.userList = userList;
-        // Inicializamos chatsRef
         this.chatsRef = FirebaseDatabase.getInstance().getReference("chats");
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_card, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
         return new UserViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
-        holder.emailTextView.setText(user.getEmail());
 
-        // Al hacer clic, se crea un chat si no existe
+        // Establecer el nombre de usuario en el TextView
+        if (user != null && user.getUserName() != null) {
+            holder.userName.setText(user.getUserName());
+        } else {
+            holder.userName.setText("Nombre no disponible");
+        }
+
+        // Acción al hacer clic en la tarjeta (o el TextView del nombre) para iniciar el chat
         holder.itemView.setOnClickListener(view -> {
-            createChat(user.getId(), view.getContext()); // Pasamos el contexto de la vista
+            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String otherUserId = user.getUserId();
+
+            // Ordenar los userIds para garantizar un chatId consistente
+            List<String> users = Arrays.asList(currentUserId, otherUserId);
+            Collections.sort(users); // Esto garantiza que los IDs estén en orden consistente
+
+            // Generar el chatId con los userIds ordenados
+            String chatId = users.get(0) + "_" + users.get(1);
+
+            // Intent para abrir el chat
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("chatId", chatId);
+            intent.putExtra("userId", otherUserId);  // Puedes pasar el userId del otro usuario si lo necesitas
+            view.getContext().startActivity(intent);
+        });
+
+        // Acción al hacer clic en el botón de eliminar conversación
+        holder.chatButton.setOnClickListener(view -> {
+            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String otherUserId = user.getUserId();
+
+            // Ordenar los userIds para garantizar un chatId consistente
+            List<String> users = Arrays.asList(currentUserId, otherUserId);
+            Collections.sort(users); // Esto garantiza que los IDs estén en orden consistente
+
+            // Generar el chatId con los userIds ordenados
+            String chatId = users.get(0) + "_" + users.get(1);
+
+            // Eliminar el chat de Firebase
+            chatsRef.child(chatId).removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(view.getContext(), "Conversación eliminada", Toast.LENGTH_SHORT).show();
+                    // Aquí podrías actualizar la lista de usuarios para reflejar el cambio
+                    userList.remove(position);  // Eliminar usuario de la lista
+                    notifyItemRemoved(position);  // Actualizar RecyclerView
+                } else {
+                    Toast.makeText(view.getContext(), "Error al eliminar la conversación", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
+
 
     @Override
     public int getItemCount() {
         return userList.size();
     }
 
+    public void updateUsers(List<User> newUsers) {
+        userList = newUsers;
+        notifyDataSetChanged();
+    }
+
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView emailTextView;
-        Button deleteButton;
+        public TextView userName;
+        public Button chatButton;
 
         public UserViewHolder(View itemView) {
             super(itemView);
-            emailTextView = itemView.findViewById(R.id.emailTextView);
-            deleteButton = itemView.findViewById(R.id.deleteConversationButton);
+            userName = itemView.findViewById(R.id.emailTextView);  // Asegúrate de que el ID esté correcto
+            chatButton = itemView.findViewById(R.id.deleteConversationButton);  // Botón de eliminar conversación
         }
     }
-
-    private void createChat(String otherUserId, Context context) {
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String chatId = currentUserId + "_" + otherUserId;
-
-        // Verificar si el chat ya existe
-        chatsRef.child(chatId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    // Si no existe, crear un nuevo chat
-                    Map<String, Object> chatMap = new HashMap<>();
-                    chatMap.put("users", Arrays.asList(currentUserId, otherUserId));
-
-                    chatsRef.child(chatId).setValue(chatMap)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    // Si se crea el chat, ir al chat
-                                    Intent intent = new Intent(context, MainActivity.class);
-                                    intent.putExtra("chatId", chatId);
-                                    context.startActivity(intent); // Usamos el contexto de la vista
-                                } else {
-                                    Toast.makeText(context, "Error al crear el chat", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    // Si ya existe, solo ir al chat
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("chatId", chatId);
-                    context.startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Error al verificar el chat", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }
+

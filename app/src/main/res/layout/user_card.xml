@@ -12,23 +12,25 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
 
-        <!-- Texto del email del usuario -->
-        <TextView
-            android:id="@+id/emailTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:gravity="start"/>
+    <!-- Texto del nombre de usuario -->
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nombre de usuario"
+        android:textSize="16sp"
+        android:layout_weight="1"
+        android:gravity="start"/>
 
-        <!-- Botón para eliminar conversación -->
-        <Button
-            android:id="@+id/deleteConversationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Eliminar conversación"/>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    <!-- Botón para eliminar conversación -->
+    <Button
+        android:id="@+id/deleteConversationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eliminar conversación"/>
+</LinearLayout>
+    </androidx.cardview.widget.CardView>

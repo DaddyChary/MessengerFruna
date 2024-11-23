@@ -1,24 +1,34 @@
 package model;
 
 public class User {
-    private String id;
+    private String userId;
+    private String userName;
     private String email;
 
-    public User() {
-        // Constructor vacío necesario para Firebase
-    }
+    // Constructor vacío necesario para Firebase
+    public User() {}
 
-    public User(String id, String email) {
-        this.id = id;
+    public User(String userId, String userName, String email) {
+        this.userId = userId;
+        this.userName = userName;
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+    // Métodos getter y setter
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {

@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import model.User;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText email, password;
+    private EditText email, password, editTextUsername;
     private View registerButton, buttonBack;
     private FirebaseAuth auth;
 
@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         buttonBack = findViewById(R.id.buttonBack);
 
+        editTextUsername = findViewById(R.id.editTextUsername);
         email = findViewById(R.id.editTextEmail);
         password = findViewById(R.id.editTextPassword);
         registerButton = findViewById(R.id.buttonRegister);
@@ -49,10 +50,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 if (currentUser != null) {
                                     String userId = currentUser.getUid();
                                     String email = currentUser.getEmail();
+                                    String userName = editTextUsername.getText().toString();
 
-                                    // Guardar el email en la base de datos
                                     DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-                                    usersRef.child(userId).setValue(new User(userId, email));
+                                    usersRef.child(userId).setValue(new User(userId, userName, email));
                                 }
 
                                 Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();

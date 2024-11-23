@@ -17,7 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,20 @@ public class MainActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.editTextMessage);
         sendButton = findViewById(R.id.buttonSend);
         ImageButton buttonBack = findViewById(R.id.buttonBack);
-        messagesRef = FirebaseDatabase.getInstance().getReference("messages");
+
+        // Obtener el chatId del intent
+        String chatId = getIntent().getStringExtra("chatId");
+
+        // Verificar si se recibió un chatId
+        if (chatId == null || chatId.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Error: chatId no encontrado", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Referencia a los mensajes de un chat específico
+        messagesRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("messages");
+
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(this, messageList);
 
@@ -66,9 +79,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonBack.setOnClickListener(v -> {
-            finish(); // Cierra la actividad actual y vuelve a la anterior
-        });
+        // Botón para volver atrás
+        buttonBack.setOnClickListener(v -> finish()); // Cierra la actividad actual y vuelve a la anterior
 
         // Enviar mensaje
         sendButton.setOnClickListener(view -> {
@@ -77,28 +89,46 @@ public class MainActivity extends AppCompatActivity {
                 String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 // Guardar mensaje en Firebase
                 ChatMessage message = new ChatMessage(senderId, text);
-                messagesRef.push().setValue(message);
+                messagesRef.push().setValue(message)
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Error al enviar mensaje", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 messageInput.setText(""); // Limpiar el campo de entrada
             }
         });
 
-        // Escuchar cambios en los mensajes
-        messagesRef.addValueEventListener(new ValueEventListener() {
+        // Escuchar cambios en los mensajes (agregar nuevos)
+        messagesRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                messageList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    ChatMessage message = data.getValue(ChatMessage.class);
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
+                // Obtener el mensaje y agregarlo a la lista
+                ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                if (message != null) {
                     messageList.add(message);
+                    adapter.notifyItemInserted(messageList.size() - 1); // Notificar al adaptador
+                    recyclerView.scrollToPosition(messageList.size() - 1); // Desplazar al último mensaje
                 }
-                adapter.notifyDataSetChanged();
-
-                // Desplazarse automáticamente al último mensaje
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
+                // Aquí puedes manejar cambios en los mensajes si es necesario
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                // Aquí puedes manejar la eliminación de mensajes si es necesario
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
+                // Manejar movimiento de mensajes si es necesario
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "Failed to load messages!", Toast.LENGTH_SHORT).show();
             }
         });
