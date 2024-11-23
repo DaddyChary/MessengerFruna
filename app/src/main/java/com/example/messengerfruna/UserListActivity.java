@@ -2,6 +2,7 @@ package com.example.messengerfruna;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import model.User;
 public class UserListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
+    private Button btnBack, btnReload;
     private List<User> userList;
 
     @Override
@@ -29,11 +31,18 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
+        btnBack = findViewById(R.id.btnBack);
+        btnReload = findViewById(R.id.btnReload);
+
         recyclerView = findViewById(R.id.recyclerViewUsers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         userList = new ArrayList<>();
         userAdapter = new UserAdapter(userList);
         recyclerView.setAdapter(userAdapter);
+
+        btnBack.setOnClickListener(v -> finish());
+
+        btnReload.setOnClickListener(v -> loadUsersFromDatabase());
 
         loadUsersFromDatabase();
     }

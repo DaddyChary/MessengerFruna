@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,10 +29,14 @@ import model.User;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private List<User> userList;
     private DatabaseReference chatsRef;
+    private String currentUserId; // ID del usuario logeado
 
     public UserAdapter(List<User> userList) {
-        this.userList = userList;
+        this.currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Obtener el ID del usuario logeado
         this.chatsRef = FirebaseDatabase.getInstance().getReference("chats");
+
+        // Filtrar los usuarios para excluir al usuario logeado
+        this.userList = filterUsers(userList);
     }
 
     @NonNull
@@ -54,7 +59,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         // Acción al hacer clic en la tarjeta (o el TextView del nombre) para iniciar el chat
         holder.itemView.setOnClickListener(view -> {
-            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String otherUserId = user.getUserId();
 
             // Ordenar los userIds para garantizar un chatId consistente
@@ -73,7 +77,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         // Acción al hacer clic en el botón de eliminar conversación
         holder.chatButton.setOnClickListener(view -> {
-            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String otherUserId = user.getUserId();
 
             // Ordenar los userIds para garantizar un chatId consistente
@@ -97,14 +100,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         });
     }
 
-
     @Override
     public int getItemCount() {
         return userList.size();
     }
 
+    // Filtrar los usuarios para excluir al usuario logeado
+    private List<User> filterUsers(List<User> users) {
+        List<User> filteredUsers = new ArrayList<>();
+        for (User user : users) {
+            if (user != null && !user.getUserId().equals(currentUserId)) {
+                filteredUsers.add(user);
+            }
+        }
+        return filteredUsers;
+    }
+
     public void updateUsers(List<User> newUsers) {
-        userList = newUsers;
+        userList = filterUsers(newUsers); // Aplicar el filtro al actualizar la lista
         notifyDataSetChanged();
     }
 
@@ -119,4 +132,3 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
     }
 }
-
