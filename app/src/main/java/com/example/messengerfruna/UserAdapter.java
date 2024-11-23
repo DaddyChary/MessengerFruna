@@ -1,6 +1,7 @@
 package com.example.messengerfruna;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import model.ChatMessage;
 import model.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
@@ -60,6 +58,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         // Acción al hacer clic en la tarjeta (o el TextView del nombre) para iniciar el chat
         holder.itemView.setOnClickListener(view -> {
             String otherUserId = user.getUserId();
+            String userName = user.getUserName();  // Obtener el nombre del usuario
 
             // Ordenar los userIds para garantizar un chatId consistente
             List<String> users = Arrays.asList(currentUserId, otherUserId);
@@ -71,7 +70,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             // Intent para abrir el chat
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             intent.putExtra("chatId", chatId);
-            intent.putExtra("userId", otherUserId);  // Puedes pasar el userId del otro usuario si lo necesitas
+            intent.putExtra("userId", otherUserId);  // Pasar el userId del otro usuario
+            intent.putExtra("userName", userName);  // Pasar el nombre del usuario al chat
             view.getContext().startActivity(intent);
         });
 
@@ -79,24 +79,34 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.chatButton.setOnClickListener(view -> {
             String otherUserId = user.getUserId();
 
-            // Ordenar los userIds para garantizar un chatId consistente
-            List<String> users = Arrays.asList(currentUserId, otherUserId);
-            Collections.sort(users); // Esto garantiza que los IDs estén en orden consistente
+            // Crear un cuadro de diálogo de confirmación
+            new android.app.AlertDialog.Builder(view.getContext())
+                    .setMessage("¿Estás seguro de que deseas eliminar esta conversación?")
+                    .setCancelable(false)
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            String chatId = generateChatId(currentUserId, otherUserId);
 
-            // Generar el chatId con los userIds ordenados
-            String chatId = users.get(0) + "_" + users.get(1);
+                            // Eliminar el chat de Firebase
+                            chatsRef.child(chatId).removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(view.getContext(), "Conversación eliminada", Toast.LENGTH_SHORT).show();
 
-            // Eliminar el chat de Firebase
-            chatsRef.child(chatId).removeValue().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(view.getContext(), "Conversación eliminada", Toast.LENGTH_SHORT).show();
-                    // Aquí podrías actualizar la lista de usuarios para reflejar el cambio
-                    userList.remove(position);  // Eliminar usuario de la lista
-                    notifyItemRemoved(position);  // Actualizar RecyclerView
-                } else {
-                    Toast.makeText(view.getContext(), "Error al eliminar la conversación", Toast.LENGTH_SHORT).show();
-                }
-            });
+                                    // Obtén la posición actual usando getAdapterPosition()
+                                    int currentPosition = holder.getAdapterPosition();
+                                    if (currentPosition != RecyclerView.NO_POSITION) {
+                                        // Actualizar la lista de usuarios
+                                        userList.remove(currentPosition);  // Eliminar usuario de la lista
+                                        notifyItemRemoved(currentPosition);  // Actualizar RecyclerView
+                                    }
+                                } else {
+                                    Toast.makeText(view.getContext(), "Error al eliminar la conversación", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
     }
 
@@ -119,6 +129,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public void updateUsers(List<User> newUsers) {
         userList = filterUsers(newUsers); // Aplicar el filtro al actualizar la lista
         notifyDataSetChanged();
+    }
+
+    // Método para generar un chatId consistente
+    private String generateChatId(String currentUserId, String otherUserId) {
+        List<String> users = Arrays.asList(currentUserId, otherUserId);
+        Collections.sort(users); // Garantiza que el orden de los IDs sea consistente
+        return users.get(0) + "_" + users.get(1);
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ChatMessage> messageList;
     private MessageAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private TextView userNameTextView; // El TextView donde se mostrará el nombre del usuario
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.editTextMessage);
         sendButton = findViewById(R.id.buttonSend);
         ImageButton buttonBack = findViewById(R.id.buttonBack);
+        userNameTextView = findViewById(R.id.textViewUserName); // Inicializa el TextView
 
         // Obtener el chatId del intent
         String chatId = getIntent().getStringExtra("chatId");
@@ -51,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Error: chatId no encontrado", Toast.LENGTH_SHORT).show();
             finish();
             return;
+        }
+
+        // Obtener el nombre del usuario del Intent
+        String userName = getIntent().getStringExtra("userName");
+
+        // Establecer el nombre del usuario en el TextView de la Toolbar
+        if (userName != null) {
+            userNameTextView.setText(userName); // Mostrar el nombre del usuario en el TextView
         }
 
         // Referencia a los mensajes de un chat específico
