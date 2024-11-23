@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1033593395048",
+    "firebase_url": "https://messenger-fruna-default-rtdb.firebaseio.com",
+    "project_id": "messenger-fruna",
+    "storage_bucket": "messenger-fruna.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033593395048:android:ae4a60adcb4ba4996528dd",
+        "android_client_info": {
+          "package_name": "com.example.messengerfruna"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUg2VA3lQMPSdrL7HRd_wWAHTp21eTOL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
