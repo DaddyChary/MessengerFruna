@@ -17,7 +17,7 @@ import model.User;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText email, password;
-    private View registerButton;
+    private View registerButton, buttonBack;
     private FirebaseAuth auth;
 
     @Override
@@ -29,6 +29,12 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.editTextPassword);
         registerButton = findViewById(R.id.buttonRegister);
         auth = FirebaseAuth.getInstance();
+
+        buttonBack.setOnClickListener(view -> {
+            startActivity(new Intent(this, MenuActivity.class));
+            finish();
+        });
+
 
         registerButton.setOnClickListener(view -> {
             String emailText = email.getText().toString();

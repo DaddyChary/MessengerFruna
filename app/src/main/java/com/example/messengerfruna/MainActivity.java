@@ -1,5 +1,6 @@
 package com.example.messengerfruna;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +26,7 @@ import model.ChatMessage;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText messageInput;
-    private Button sendButton;
+    private Button sendButton, buttonBack;
     private DatabaseReference messagesRef;
     private List<ChatMessage> messageList;
     private MessageAdapter adapter;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewMessages);
         messageInput = findViewById(R.id.editTextMessage);
         sendButton = findViewById(R.id.buttonSend);
+        buttonBack = findViewById(R.id.buttonBack);
         messagesRef = FirebaseDatabase.getInstance().getReference("messages");
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(this, messageList);
@@ -61,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 }
             }
+        });
+
+        buttonBack.setOnClickListener(view -> {
+            startActivity(new Intent(this, UserListActivity.class));
+            finish();
         });
 
         // Enviar mensaje

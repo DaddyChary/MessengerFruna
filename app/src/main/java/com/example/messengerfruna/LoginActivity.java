@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
-    private Button loginButton;
+    private Button loginButton, buttonBack;
     private FirebaseAuth auth;
 
     @Override
@@ -24,6 +24,11 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.buttonLogin);
         auth = FirebaseAuth.getInstance();
+
+        buttonBack.setOnClickListener(view -> {
+            startActivity(new Intent(this, MenuActivity.class));
+            finish();
+        });
 
         loginButton.setOnClickListener(view -> {
             String emailText = email.getText().toString();

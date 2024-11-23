@@ -26,6 +26,7 @@ import model.User;
 public class UserListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
+    private Button backButton, reloadButton;
     private List<User> userList = new ArrayList<>();
     private FirebaseAuth auth;
     private DatabaseReference usersRef, chatsRef;
@@ -46,6 +47,16 @@ public class UserListActivity extends AppCompatActivity {
         chatsRef = FirebaseDatabase.getInstance().getReference("chats");
 
         loadUsers(); // Cargar todos los usuarios
+
+        backButton.setOnClickListener(view -> {
+            startActivity(new Intent(this, MenuActivity.class));
+            finish();
+        });
+
+        reloadButton.setOnClickListener(view -> {
+            loadUsers();
+        });
+
     }
 
     private void loadUsers() {
