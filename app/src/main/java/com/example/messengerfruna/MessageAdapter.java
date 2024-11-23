@@ -1,8 +1,6 @@
 package com.example.messengerfruna;
 
 import android.content.Context;
-import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import model.ChatMessage;
 import java.util.List;
+
+import model.ChatMessage;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     private Context context;
@@ -40,27 +39,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         // Obtener el ID del usuario actual
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Si el mensaje fue enviado por el usuario actual, alinearlo a la derecha
+        ConstraintLayout.LayoutParams paramsLeft = (ConstraintLayout.LayoutParams) holder.spaceLeft.getLayoutParams();
+        ConstraintLayout.LayoutParams paramsRight = (ConstraintLayout.LayoutParams) holder.spaceRight.getLayoutParams();
+
         if (message.getSenderId().equals(currentUserId)) {
+            // Mensaje del usuario actual -> Alinear a la derecha
+            paramsLeft.horizontalWeight = 1f;  // Espacio izquierdo pequeño
+            paramsRight.horizontalWeight = 0f; // Espacio derecho toma el resto
+
             holder.messageTextView.setBackgroundResource(R.drawable.message_background_right);
-            holder.messageTextView.setGravity(Gravity.END);  // Alineación a la derecha
-
-            // Ajustamos las restricciones para que el mensaje esté pegado a la derecha
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.messageTextView.getLayoutParams();
-            params.leftToLeft = ConstraintLayout.LayoutParams.UNSET;  // Eliminar cualquier restricción izquierda
-            params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;  // Alinearlo a la derecha
-            holder.messageTextView.setLayoutParams(params);
+            holder.messageTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         } else {
-            // Si el mensaje fue enviado por otro usuario, alinearlo a la izquierda
-            holder.messageTextView.setBackgroundResource(R.drawable.message_background_left);
-            holder.messageTextView.setGravity(Gravity.START);  // Alineación a la izquierda
+            // Mensaje de otro usuario -> Alinear a la izquierda
+            paramsLeft.horizontalWeight = 0f;  // Espacio izquierdo toma el resto
+            paramsRight.horizontalWeight = 1f; // Espacio derecho pequeño
 
-            // Ajustamos las restricciones para que el mensaje esté pegado a la izquierda
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.messageTextView.getLayoutParams();
-            params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;  // Alinearlo a la izquierda
-            params.rightToRight = ConstraintLayout.LayoutParams.UNSET;  // Eliminar cualquier restricción derecha
-            holder.messageTextView.setLayoutParams(params);
+            holder.messageTextView.setBackgroundResource(R.drawable.message_background_left);
+            holder.messageTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         }
+
+        holder.spaceLeft.setLayoutParams(paramsLeft);
+        holder.spaceRight.setLayoutParams(paramsRight);
 
         // Establecer el texto del mensaje
         holder.messageTextView.setText(message.getText());
@@ -73,10 +72,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         public TextView messageTextView;
+        public View spaceLeft;
+        public View spaceRight;
 
         public MessageViewHolder(View itemView) {
             super(itemView);
             messageTextView = itemView.findViewById(R.id.messageTextView);
+            spaceLeft = itemView.findViewById(R.id.spaceLeft);
+            spaceRight = itemView.findViewById(R.id.spaceRight);
         }
     }
 }

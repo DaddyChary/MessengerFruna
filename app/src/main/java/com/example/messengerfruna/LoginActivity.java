@@ -1,7 +1,5 @@
 package com.example.messengerfruna;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -36,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, MainActivity.class));
+                                startActivity(new Intent(this, UserListActivity.class));  // Redirige a la lista de usuarios
                             } else {
                                 Toast.makeText(this, "Login failed!", Toast.LENGTH_SHORT).show();
                             }

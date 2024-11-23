@@ -9,7 +9,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.inappmessaging.model.Button;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import model.User;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText email, password;
@@ -34,8 +38,18 @@ public class RegisterActivity extends AppCompatActivity {
                 auth.createUserWithEmailAndPassword(emailText, passwordText)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+                                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                                if (currentUser != null) {
+                                    String userId = currentUser.getUid();
+                                    String email = currentUser.getEmail();
+
+                                    // Guardar el email en la base de datos
+                                    DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                                    usersRef.child(userId).setValue(new User(userId, email));
+                                }
+
                                 Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, LoginActivity.class));
+                                startActivity(new Intent(this, LoginActivity.class));  // Redirige al login
                             } else {
                                 Toast.makeText(this, "Registration failed!", Toast.LENGTH_SHORT).show();
                             }

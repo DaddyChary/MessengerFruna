@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.inappmessaging)
     implementation(libs.firebase.database)
+    implementation(libs.recyclerview)
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

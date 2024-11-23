@@ -1,17 +1,12 @@
 package com.example.messengerfruna;
 
 import android.os.Bundle;
-import android.os.Message;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText messageInput;
     private Button sendButton;
     private DatabaseReference messagesRef;
-    private List<ChatMessage> messageList;  // Cambiar Message a ChatMessage
+    private List<ChatMessage> messageList;
     private MessageAdapter adapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,28 +43,51 @@ public class MainActivity extends AppCompatActivity {
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(this, messageList);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Configuración del RecyclerView
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true); // Desplazar automáticamente al final
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
+        // Agregar un observador para desplazamiento automático
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                // Si el usuario ya está al final, desplazarse automáticamente
+                int lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                if (lastVisiblePosition == -1 || lastVisiblePosition == positionStart - 1) {
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                }
+            }
+        });
+
+        // Enviar mensaje
         sendButton.setOnClickListener(view -> {
             String text = messageInput.getText().toString();
             if (!text.isEmpty()) {
                 String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                ChatMessage message = new ChatMessage(senderId, text);  // Cambiar Message a ChatMessage
+                // Guardar mensaje en Firebase
+                ChatMessage message = new ChatMessage(senderId, text);
                 messagesRef.push().setValue(message);
-                messageInput.setText("");
+                messageInput.setText(""); // Limpiar el campo de entrada
             }
         });
 
+        // Escuchar cambios en los mensajes
         messagesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messageList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    ChatMessage message = data.getValue(ChatMessage.class);  // Cambiar Message a ChatMessage
+                    ChatMessage message = data.getValue(ChatMessage.class);
                     messageList.add(message);
                 }
                 adapter.notifyDataSetChanged();
+
+                // Desplazarse automáticamente al último mensaje
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
 
             @Override
