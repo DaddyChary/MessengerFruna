@@ -22,7 +22,9 @@
             android:id="@+id/editTextUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="#000000"
+            android:background="#B3E5FC"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Campo para Email -->
@@ -41,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="#FF7043"/>
+            android:textColor="#000000"
+            android:background="#B3E5FC" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Campo para Password -->
@@ -60,7 +63,9 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:background="#B3E5FC"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Botón de Registro -->
