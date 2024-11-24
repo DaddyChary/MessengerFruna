@@ -77,13 +77,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public MessageViewHolder(View itemView) {
             super(itemView);
-<<<<<<< HEAD
             messageTextView = itemView.findViewById(R.id.recyclerViewMessages);
-=======
             messageTextView = itemView.findViewById(R.id.messageTextView);
             spaceLeft = itemView.findViewById(R.id.spaceLeft);
             spaceRight = itemView.findViewById(R.id.spaceRight);
->>>>>>> dd9a3e3c4fddadb937420f5da1f04ec9d8d4a0f1
         }
     }
 }
