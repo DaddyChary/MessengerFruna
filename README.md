@@ -101,11 +101,13 @@ Sigue estas instrucciones para obtener una copia del proyecto y ejecutarla en tu
 │   │   │   │   ├── MessageAdapter.java      # Adaptador para los mensajes
 │   │   │   │   ├── LoginActivity.java       # Pantalla de inicio de sesión
 │   │   │   │   ├── RegisterActivity.java    # Pantalla de registro
+│   │   │   │   ├── Etc...    # El resto de clases
 │   │   │   ├── res/
 │   │   │   │   ├── layout/
 │   │   │   │   │   ├── activity_main.xml    # Diseño de la pantalla principal
 │   │   │   │   │   ├── item_user.xml        # Diseño para cada usuario en la lista
 │   │   │   │   │   ├── item_message.xml     # Diseño para cada mensaje
+│   │   │   │   │   ├── Etc...               # El resto de layouts
 │   │   │   │   ├── drawable/
 │   │   │   │   ├── values/
 │   │   │   ├── AndroidManifest.xml          # Configuración del manifiesto
