@@ -4,9 +4,8 @@ public class ChatMessage {
     private String senderId;
     private String text;
 
-    public ChatMessage() {
-        // Constructor vacío necesario para Firebase
-    }
+    // Constructor vacío necesario para Firebase
+    public ChatMessage() {}
 
     public ChatMessage(String senderId, String text) {
         this.senderId = senderId;
@@ -29,4 +28,3 @@ public class ChatMessage {
         this.text = text;
     }
 }
-

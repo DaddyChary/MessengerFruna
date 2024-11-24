@@ -1,7 +1,5 @@
 package com.example.messengerfruna;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
-    private Button loginButton;
+    private Button loginButton, buttonBack;
     private FirebaseAuth auth;
 
     @Override
@@ -22,10 +20,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        buttonBack = findViewById(R.id.buttonBack);
+
         email = findViewById(R.id.editTextEmail);
         password = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.buttonLogin);
         auth = FirebaseAuth.getInstance();
+
+        buttonBack.setOnClickListener(view -> {
+            finish();
+        });
 
         loginButton.setOnClickListener(view -> {
             String emailText = email.getText().toString();
@@ -36,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, MainActivity.class));
+                                startActivity(new Intent(this, UserListActivity.class));  // Redirige a la lista de usuarios
                             } else {
                                 Toast.makeText(this, "Login failed!", Toast.LENGTH_SHORT).show();
                             }
