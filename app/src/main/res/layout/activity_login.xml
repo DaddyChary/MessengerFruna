@@ -4,13 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/logo">
 
     <!-- Campo para Email -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:hintTextColor="#7D7D7D"
+        android:layout_marginTop="158dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -38,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Contraseña"
+            app:hintTextColor="#7D7D7D"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -47,6 +51,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Ingresar"
+        android:backgroundTint="#333333"
+        android:textColor="#ffffff"
         app:layout_constraintTop_toBottomOf="@id/layoutPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,6 +64,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Volver"
+        android:backgroundTint="#333333"
+        android:textColor="#ffffff"
         app:layout_constraintTop_toBottomOf="@id/buttonLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

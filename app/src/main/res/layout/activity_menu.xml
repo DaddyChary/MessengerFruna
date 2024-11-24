@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/logo">
 
     <!-- Botón para ir al Login -->
     <com.google.android.material.button.MaterialButton
@@ -12,10 +13,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Ir al Login"
+        android:backgroundTint="#333333"
+        android:textColor="#ffffff"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="194dp"/>
 
     <!-- Botón para ir al Register -->
     <com.google.android.material.button.MaterialButton
@@ -23,6 +26,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Ir al Register"
+        android:backgroundTint="#333333"
+        android:textColor="#ffffff"
         app:layout_constraintTop_toBottomOf="@id/buttonLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

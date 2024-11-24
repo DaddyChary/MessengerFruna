@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/logo"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -22,20 +23,26 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:hintTextColor="#FF7043">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ingrese un mensaje" />
+                android:hint="Ingrese un mensaje"
+                android:background="#D1D1D1"
+                android:textColor="#FF7043"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enviar" />
+            android:text="Enviar"
+            android:backgroundTint="#333333"
+            android:textColor="#ffffff"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#4caf50"/> <!-- Fondo verde para los mensajes enviados -->
-    <corners android:radius="16dp"/>  <!-- Bordes redondeados -->
-    <padding
-        android:left="16dp"
-        android:top="8dp"
-        android:right="16dp"
-        android:bottom="8dp"/> <!-- Padding para dar espacio alrededor del texto -->
+    <solid android:color="#6200EA" />
+    <corners android:radius="12dp" />
 </shape>
